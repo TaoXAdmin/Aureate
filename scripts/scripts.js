@@ -21,101 +21,118 @@ function updateSubheadline() {
     }
 }
 
-// Appelle la fonction au chargement et lors du redimensionnement
+// Initial update on page load and window resize
 window.addEventListener('load', updateSubheadline);
 window.addEventListener('resize', updateSubheadline);
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Product Gallery Functionality
+    try {
+        // Gallery elements
+        const galleryContainer = document.querySelector('.product-gallery');
+        const products = document.querySelectorAll('.product-item');
+        const indicatorsContainer = document.querySelector('.gallery-indicators');
+        let currentIndex = 0;
 
-// Initial update on page load
-updateSubheadline();
+        // Navigation buttons
+        const prevButton = document.querySelector('.gallery-nav.prev');
+        const nextButton = document.querySelector('.gallery-nav.next');
 
-// Update subheadline on window resize
-window.addEventListener('resize', updateSubheadline);
+        // Swipe handling variables
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const swipeThreshold = 50;
 
-// Handle swipe navigation for the product gallery
-let touchStartX = 0; // X-coordinate where the touch starts
-let touchEndX = 0;   // X-coordinate where the touch ends
-const swipeThreshold = 50; // Minimum swipe distance to trigger navigation
+        // Initialize gallery if elements exist
+        if (galleryContainer && products.length > 0 && indicatorsContainer) {
+            // Create navigation indicators
+            products.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+                indicator.addEventListener('click', () => showProduct(index));
+                indicatorsContainer.appendChild(indicator);
+            });
 
-const galleryContainer = document.querySelector('.product-gallery');
+            // Add button event listeners
+            if (prevButton && nextButton) {
+                prevButton.addEventListener('click', prevProduct);
+                nextButton.addEventListener('click', nextProduct);
+            }
 
-// Record the starting X position when the touch begins
-galleryContainer.addEventListener('touchstart', e => {
-    touchStartX = e.changedTouches[0].screenX;
-});
+            // Touch event handlers
+            galleryContainer.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
 
-// Record the ending X position when the touch ends
-galleryContainer.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe(); // Handle the swipe event
-});
+            galleryContainer.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+        }
 
-// Handle swipe logic for next/previous product navigation
-function handleSwipe() {
-    const swipeDistance = touchEndX - touchStartX;
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+            if (Math.abs(swipeDistance) < swipeThreshold) return;
+            swipeDistance > 0 ? prevProduct() : nextProduct();
+        }
 
-    // Ignore small swipes that don't meet the threshold
-    if (Math.abs(swipeDistance) < swipeThreshold) return;
+        function prevProduct() {
+            showProduct((currentIndex - 1 + products.length) % products.length);
+        }
 
-    // Navigate to previous product if swipe is right, otherwise next product
-    if (swipeDistance > 0) prevProduct();
-    else nextProduct();
-}
+        function nextProduct() {
+            showProduct((currentIndex + 1) % products.length);
+        }
 
-const products = document.querySelectorAll('.product-item');
-const indicatorsContainer = document.querySelector('.gallery-indicators');
-let currentIndex = 0; // Index of the currently displayed product
+        function showProduct(index) {
+            products[currentIndex].classList.remove('active');
+            indicatorsContainer.children[currentIndex].classList.remove('active');
+            currentIndex = index;
+            products[currentIndex].classList.add('active');
+            indicatorsContainer.children[currentIndex].classList.add('active');
+        }
 
-// Create navigation indicators for each product
-products.forEach((_, index) => {
-    const indicator = document.createElement('div');
-    indicator.className = `indicator ${index === 0 ? 'active' : ''}`;
+    } catch (error) {
+        console.error('Gallery initialization error:', error);
+    }
 
-    // Navigate to the selected product when the indicator is clicked
-    indicator.addEventListener('click', () => showProduct(index));
-
-    indicatorsContainer.appendChild(indicator);
-});
-
-// Show the previous product in the carousel
-function prevProduct() {
-    showProduct((currentIndex - 1 + products.length) % products.length);
-}
-
-// Show the next product in the carousel
-function nextProduct() {
-    showProduct((currentIndex + 1) % products.length);
-}
-
-// Display the product at the specified index
-function showProduct(index) {
-    // Hide the current product and deactivate its indicator
-    products[currentIndex].classList.remove('active');
-    indicatorsContainer.children[currentIndex].classList.remove('active');
-
-    // Update the current index to the new product
-    currentIndex = index;
-
-    // Show the new product and activate its indicator
-    products[currentIndex].classList.add('active');
-    indicatorsContainer.children[currentIndex].classList.add('active');
-}
-
-
-setTimeout(() => {
-    const loader = document.querySelector('.gold-dust-loader');
-    
-    // Animation de disparition du loader
-    loader.style.animation = 'fadeOut 1s ease-in forwards';
-    
+    // Loader animation
     setTimeout(() => {
-        loader.style.display = "none";
-        
-        const headerContent = document.querySelector('.header-content');
-        headerContent.style.opacity = "1";
-        headerContent.style.transform = "translateY(0)";
-        
-        // Animation supplémentaire pour le contenu
-        headerContent.style.animation = 'fadeIn 1s ease-out';
-    }, 1000); // Correspond à la durée de l'animation fadeOut
-}, 2500);
+        const loader = document.querySelector('.gold-dust-loader');
+        if (loader) {
+            loader.style.animation = 'fadeOut 1s ease-in forwards';
+            setTimeout(() => {
+                loader.style.display = "none";
+                const headerContent = document.querySelector('.header-content');
+                if (headerContent) {
+                    headerContent.style.opacity = "1";
+                    headerContent.style.transform = "translateY(0)";
+                    headerContent.style.animation = 'fadeIn 1s ease-out';
+                }
+            }, 100);
+        }
+    }, 2500);
+
+    // Water effect positioning
+    function compensateOffset(img) {
+        setTimeout(() => {
+            const boundingBox = img.getBoundingClientRect();
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const offsetX = boundingBox.left + boundingBox.width / 2 - centerX;
+            const offsetY = boundingBox.top + boundingBox.height / 2 - centerY;
+            img.style.transform = `translate(calc(-50% - ${offsetX}px), calc(-50% - ${offsetY}px))`;
+        }, 100);
+    }
+	      setTimeout(() => {
+          compensateOffset(img);
+      }, 1000);
+
+    // Apply water effect to all images
+    document.querySelectorAll('.water-effect').forEach(img => {
+        img.style.position = "absolute";
+        img.style.top = "50%";
+        img.style.left = "50%";
+        img.style.transform = "translate(-50%, -50%)";
+    });
+});
