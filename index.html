@@ -154,38 +154,7 @@
       numOctaves: "3"
   });
 
-  // Fonction pour compenser dynamiquement le décalage
-  function compensateOffset(img) {
-      setTimeout(() => {
-          const boundingBox = img.getBoundingClientRect();
-
-          // Calcul du centre de la fenêtre
-          const centerX = window.innerWidth / 2;
-          const centerY = window.innerHeight / 2;
-
-          // Calcul des écarts
-          const offsetX = boundingBox.left + boundingBox.width / 2 - centerX;
-          const offsetY = boundingBox.top + boundingBox.height / 2 - centerY;
-
-          // Application de la compensation dynamique
-          img.style.transform = `translate(calc(-50% - ${offsetX}px), calc(-50% - ${offsetY}px))`;
-      }, 100); // Attendre la stabilisation du DOM
-  }
-
-  // Application à toutes les images avec l'effet d'eau
-  document.querySelectorAll('.water-effect').forEach(img => {
-      img.style.position = "absolute";
-      img.style.top = "50%";
-      img.style.left = "50%";
-      img.style.transform = "translate(-50%, -50%)";
-
-      // Démarrage des animations et compensation
-      setTimeout(() => {
-          animateTurbulence.beginElement();
-          animateDisplacement.beginElement();
-          compensateOffset(img);
-      }, 1000);
-  });
+ 
 </script>
 
 </body>
