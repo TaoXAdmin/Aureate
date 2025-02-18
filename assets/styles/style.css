@@ -170,7 +170,7 @@ section {
 .header-content {
 	opacity: 0;
     transform: translateY(50px);
-    transition: opacity 1.5s ease-in-out, transform 1.5s ease-in-out;
+    transition: opacity 1.5s ease-in-out;
     height: 100vh; /* Full viewport height */
     display: flex;
     flex-direction: column;
