@@ -74,13 +74,14 @@ html {
 }
 
 /* Body Styling */
-body {
+body {	
     font-family: 'Playfair Display', serif; /* Elegant serif font for luxury feel */
     color: var(--text-dark); /* Default text color */
     line-height: 1.6; /* Improve readability */
     overflow-x: hidden; /* Empêcher le défilement indésirable */
 	margin: 0;
-	 background-color: #000;
+	background: url("assets/images/temp.png") no-repeat center center fixed;
+	background-size: cover;
 }
 
 .hidden {
