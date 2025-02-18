@@ -26,7 +26,7 @@
     </div>
 
     <!-- Main Content Wrapper -->
-    <div class="content-wrapper">
+    <div class="content-wrapper hidden">
  <!-- Dust Cloud Loader -->
 	<div class="gold-dust-loader">
 	  <div class="water-container">
@@ -140,7 +140,21 @@
             <button class="cta-button">Schedule a Private Viewing</button>
         </section>
     </div>
-
+<script>
+  window.addEventListener('load', () => {
+    const bgVideo = document.getElementById('bgVideo');
+    
+    // Si la vidéo est déjà prête, on peut directement afficher le contenu
+    if (bgVideo.readyState >= 3) {
+      document.querySelector('.content-wrapper').classList.remove('hidden');
+    } else {
+      // Sinon, on attend que la vidéo soit jouable
+      bgVideo.addEventListener('canplaythrough', () => {
+        document.querySelector('.content-wrapper').classList.remove('hidden');
+      });
+    }
+  });
+</script>
     <!-- External Script -->
     <script src="scripts/scripts.js"></script>
 	<script src="scripts/water-effect.js"></script>
